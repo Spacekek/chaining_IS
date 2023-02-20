@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "XGQNbZde0CHTTo0wxfWMk1PChAnWdRiQZjGVOwfDALfNOjd8QchH5aVXtPWwLDwvGSZIExU+q6/CRWH4Bf4GPQ==",
+  "success": true,
+  "projectFilePath": "/home/kek/code/chaining_IS/chaining_IS.csproj",
+  "expectedPackageFiles": [
+    "/home/kek/.nuget/packages/microsoft.aspnetcore.app.ref/7.0.2/microsoft.aspnetcore.app.ref.7.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}

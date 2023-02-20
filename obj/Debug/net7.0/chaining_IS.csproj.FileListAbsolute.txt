@@ -1,0 +1,15 @@
+/home/kek/code/chaining_IS/bin/Debug/net7.0/chaining_IS
+/home/kek/code/chaining_IS/bin/Debug/net7.0/chaining_IS.deps.json
+/home/kek/code/chaining_IS/bin/Debug/net7.0/chaining_IS.runtimeconfig.json
+/home/kek/code/chaining_IS/bin/Debug/net7.0/chaining_IS.dll
+/home/kek/code/chaining_IS/bin/Debug/net7.0/chaining_IS.pdb
+/home/kek/code/chaining_IS/obj/Debug/net7.0/chaining_IS.csproj.AssemblyReference.cache
+/home/kek/code/chaining_IS/obj/Debug/net7.0/chaining_IS.GeneratedMSBuildEditorConfig.editorconfig
+/home/kek/code/chaining_IS/obj/Debug/net7.0/chaining_IS.AssemblyInfoInputs.cache
+/home/kek/code/chaining_IS/obj/Debug/net7.0/chaining_IS.AssemblyInfo.cs
+/home/kek/code/chaining_IS/obj/Debug/net7.0/chaining_IS.csproj.CoreCompileInputs.cache
+/home/kek/code/chaining_IS/obj/Debug/net7.0/chaining_IS.dll
+/home/kek/code/chaining_IS/obj/Debug/net7.0/refint/chaining_IS.dll
+/home/kek/code/chaining_IS/obj/Debug/net7.0/chaining_IS.pdb
+/home/kek/code/chaining_IS/obj/Debug/net7.0/chaining_IS.genruntimeconfig.cache
+/home/kek/code/chaining_IS/obj/Debug/net7.0/ref/chaining_IS.dll
