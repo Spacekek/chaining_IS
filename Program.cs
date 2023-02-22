@@ -1,47 +1,47 @@
 ﻿using System;
+using System.Collections.Generic;
+
+// example input:
+// % 7 3 b f b t bla // amount of clauses and goals and the searchmethod (here ’b’)
+// p :- l, % comments can be at the end of lines like this
+// m.
+// m :- b, l.
+// q :- p.
+// b.
+// l :-
+// a,
+// p.
+// l :- a,
+// b.
+// a.
+// % s.
+// % q.
+// % p.
+
 
 namespace Chaining {
 	class Chaining {
 		static void Main(string[] args) {
-			// example input:
-			// % 7 3 b
-			// p :- l, % example comment to be ignored
-			// m.
-			// m :- b, l.
-			// q :- p.
-			// b.
-			// l :-
-			// a,
-			// p.
-			// l :- a,
-			// b.
-			// a.
-			// % s.
-			// % q.
-			// % p.
 			string[] settings = Console.ReadLine().Split(' ');
 			int m = int.Parse(settings[1]);
 			int n = int.Parse(settings[2]);
 			char t = char.Parse(settings[3]);
-			string[] kb = new string[m];
+      // knowledge base as hashmap of rules
+      Dictionary<string, string[]> kb = new Dictionary<string, string[]>();
 			string[] queries = new string[n];
-			for (int i = 0; i < m; i++) {
-				// m clauses in the knowledge base
-				while (true) {
-					string s = Console.ReadLine();
-					if (s.Contains("%")) {
-						s = s.Split('%')[0];
-					}
-					kb[i] += s;
-					if (s.Contains(".")) {
-						break;
-					}
-				}
-				// save facts as rules, E.G. a. becomes a :- true.
-				if (!kb[i].Contains(":-")) {
-					kb[i] = kb[i].Split('.')[0] + " :- true.";
-				}
-			}
+			// read knowledge base and parse
+      for (int i = 0; i < m; i++) {
+        // m rules
+        string input = "";
+        while (true){
+          input += Console.ReadLine.Split('%')[0].Trim();
+          if (input.Contains('.')) {break;}
+        }
+        string[] rule = input.Split(":-");
+        string conclusion = rule[0].Trim();
+        string[] premises = rule[1].Split(',').Trim();
+        kb.Add(conclusion, premises);
+      }
 			for (int i = 0; i < n; i++) {
 				// n queries
 				queries[i] = Console.ReadLine().Split(' ')[1].Split('.')[0];
