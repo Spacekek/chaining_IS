@@ -1,77 +1,115 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// example input:
-// % 7 3 b f b t bla // amount of clauses and goals and the searchmethod (here ’b’)
-// p :- l, % comments can be at the end of lines like this
-// m.
-// m :- b, l.
-// q :- p.
-// b.
-// l :-
-// a,
-// p.
-// l :- a,
-// b.
-// a.
-// % s.
-// % q.
-// % p.
-
-
 namespace Chaining {
 	class Chaining {
-		static void Main(string[] args) {
-			string[] settings = Console.ReadLine().Split(' ');
-			int m = int.Parse(settings[1]);
-			int n = int.Parse(settings[2]);
-			char t = char.Parse(settings[3]);
-      // knowledge base as hashmap of rules
-      Dictionary<string, string[]> kb = new Dictionary<string, string[]>();
-			string[] queries = new string[n];
-			// read knowledge base and parse
+    static void Main(string[] args) {
+      string[] settings = Console.ReadLine().Split(' ');
+      int m = int.Parse(settings[1]);
+      int n = int.Parse(settings[2]);
+      char t = char.Parse(settings[3]);
+      Dictionary<string, List<string[]>> kb = Read_KB(m);
+      string[] queries = new string[n];
+      for (int i = 0; i < n; i++) queries[i] = Console.ReadLine().Split(' ')[1].Split('.')[0];
+      Output(kb, queries, t);
+    }
+
+    // function for reading the knowledge base
+    static Dictionary<string, List<string[]>> Read_KB(int m) {
+      Dictionary<string, List<string[]>> kb = new Dictionary<string, List<string[]>>();
       for (int i = 0; i < m; i++) {
         // m rules
         string input = "";
         while (true){
-          input += Console.ReadLine.Split('%')[0].Trim();
-          if (input.Contains('.')) {break;}
+          input += Console.ReadLine().Split('%')[0].Trim();
+          if (input.Contains(".")) {break;}
         }
-        string[] rule = input.Split(":-");
-        string conclusion = rule[0].Trim();
-        string[] premises = rule[1].Split(',').Trim();
-        kb.Add(conclusion, premises);
+        // if the rule is only a fact (no premises), add "true" as premise
+        if (!input.Contains(":-")) {
+          input = input.Replace(".", ":- true.");
+        }
+        string[] rule = input.Split('-');
+        // remove ':' from conclusion
+        string conclusion = rule[0].Substring(0, rule[0].Length-1).Trim();
+        string[] premises = rule[1].Split(',');
+        for (int j = 0; j < premises.Length; j++) {
+          premises[j] = premises[j].Trim();
+          premises[j] = String.Join("", premises[j].Split('.', ' '));
+        }
+        if (!kb.ContainsKey(conclusion)) {
+          kb[conclusion] = new List<string[]>();
+        }
+        kb[conclusion].Add(premises);
       }
-			for (int i = 0; i < n; i++) {
-				// n queries
-				queries[i] = Console.ReadLine().Split(' ')[1].Split('.')[0];
-			}
+      return kb;
+    }
 
-			// test if everything is read correctly
-			Console.WriteLine("m = " + m + ", n = " + n + ", t = " + t);
-			Console.WriteLine("Knowledge base:");
-			foreach (string s in kb) {
-		 		Console.WriteLine(s);
+    // function
+    static void Output(Dictionary<string, List<string[]>> kb, string[] queries, char t) {
+			foreach (string query in queries) {
+        if (t == 'b') {
+          if (BackwardChaining(kb, query, new HashSet<string>()) || query == "true") {
+            Console.WriteLine(query + ". " + "true" + '.');
+          }
+          else Console.WriteLine(query + ". " + "false" + '.');
+        }
+        else {
+          if (ForwardChaining(kb, query, new HashSet<string>(), new HashSet<string>()) || query == "true") {
+            Console.WriteLine(query + ". " + "true" + '.');
+          }
+          else Console.WriteLine(query + ". " + "false" + '.');
+        }
+      }
+    }
+    static bool ForwardChaining(Dictionary<string, List<string[]>> kb, string query, HashSet<string> facts, HashSet<string> seen) {
+			if (query == "true") facts.Add(query);
+			if (facts.Contains(query)) return true;
+			if (seen.Contains(query)) return false;
+			seen.Add(query);
+			if (!kb.ContainsKey(query)) return false;
+			foreach(KeyValuePair<string, List<string[]>> entry in kb) {
+				foreach (string[] rule in entry.Value) {
+					bool allPremisesTrue = true;
+					foreach (string premise in rule) {
+						if (!ForwardChaining(kb, premise, facts, seen)) {
+							allPremisesTrue = false;
+							break;
+						}
+						seen.Remove(premise);
+					}
+					if (allPremisesTrue) {
+						facts.Add(entry.Key);
+						break;
+					}
+				}
 			}
-			Console.WriteLine("Queries:");
-			foreach (string s in queries) {
-			 	Console.WriteLine(s);
-			}
-
-			// run chosen algorithm
-			if (t == 'b'){
-				BackwardChaining(kb, queries);
-			}
-			else {
-				ForwardChaining(kb, queries);
-			}
+			return facts.Contains(query);
 		}
-		// forward chaining to find out which queries are true given the knowledge base
-		static void ForwardChaining(string[] kb, string[] queries) {
-		}
-
-		// backward chaining to find out which queries are true given the knowledge base
-		static void BackwardChaining(string[] kb, string[] queries) {
-		}
+    static bool BackwardChaining(Dictionary<string, List<string[]>> kb, string query, HashSet<string> seen) {
+			// if query is true, return true
+			if (query == "true") return true;
+			// if query has been seen, return false
+			if (seen.Contains(query)) return false;
+			seen.Add(query);
+      // if query is not in knowledge base, return false
+      if (!kb.ContainsKey(query)) return false;
+      foreach (string[] rule in kb[query]) {
+        bool allPremisesTrue = true;
+        foreach (string premise in rule) {
+          if (!BackwardChaining(kb, premise, seen)) {
+						allPremisesTrue = false;
+            break;
+          }
+					// remove premise from seen to allow for multiple uses of premise
+					seen.Remove(premise);
+        }
+        if (allPremisesTrue) return true;
+      }
+      return false;
+    }
+    static List<string[]> Rules_For_Goal(Dictionary<string, List<string[]>> kb, string goal){
+      kb.TryGetValue(goal, out List<string[]> rules);
+      return rules;
+    }
 	}
 }
